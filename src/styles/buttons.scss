@@ -1,0 +1,21 @@
+.btn {
+  display: inline-flex;
+  border: none;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  &.btn-secondary {
+    background: $c-pink;
+    color: $c-white;
+  }
+  &.btn-primary {
+    background: $c-black;
+    color: $c-white;
+  }
+}
+
+.btn, .btn span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
