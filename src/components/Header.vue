@@ -1,5 +1,5 @@
 <template>
-  <header class="header" v-bind:class="{ 'header-alternative': isActive }">
+  <header class="header" :class="{ 'header-alternative': isActive }">
     <div class="container">
       <div class="row">
         <div class="header--wrapper f jc-sb">
@@ -42,7 +42,8 @@
               <img src="@/assets/icons/cabinet.svg" alt="login icon" />
               <span>{{ loginLabel }}</span>
             </a>
-            <a href="#" class="header--btns--item leave-btn" v-if="isLogin"></a>
+            <a href="#" class="header--btns--item leave-btn" v-if="isLogin">
+            <img src="@/assets/icons/leave.svg" alt="leave page icon"></a>
           </div>
         </div>
       </div>
@@ -59,7 +60,7 @@ export default {
   },
   data() {
     return {
-      isLogin: false,
+      isLogin: true,
     };
   },
   methods: {
@@ -145,7 +146,8 @@ export default {
     }
 
     &.leave-btn {
-      background-image: url(@/assets/icons/leave.svg);
+      width: 24px;
+      height: 19.2px;
     }
   }
   & .header--nav--list--item {
