@@ -4,7 +4,12 @@
       <div class="row">
         <div class="header--wrapper f jc-sb">
           <div class="header--logo-nav-wrapper f">
-            <a href="/" class="header--logo"></a>
+            <button class="mobile-btn">
+              <img src="@/assets/icons/mobile-btn.svg" alt="mobile button" />
+            </button>
+            <a href="/" class="header--logo">
+              <img src="@/assets/icons/logo_cult_black.svg" alt="logo"
+            /></a>
             <nav class="header--nav">
               <ul class="header--nav--list f" v-if="activeTopList">
                 <li class="header--nav--list--item light">
@@ -33,17 +38,18 @@
           <div class="header--btns f">
             <button type="button" class="header--btns--item search-btn">
               <img src="@/assets/icons/search.svg" alt="search icon" />
-              <span>Найти...</span>
             </button>
 
-            <a href="#" class="header--btns--item favorite-btn"></a>
-            <a href="#" class="header--btns--item cart-btn"></a>
+            <a href="#" class="header--btns--item favorite-btn"
+              ><img src="@/assets/icons/favorite.svg" alt="like"
+            /></a>
+            <a href="#" class="header--btns--item cart-btn">
+              <img src="@/assets/icons/cart-black.svg" alt="cart"
+            /></a>
             <a href="#" class="header--btns--item login-btn">
               <img src="@/assets/icons/cabinet.svg" alt="login icon" />
               <span>{{ loginLabel }}</span>
             </a>
-            <a href="#" class="header--btns--item leave-btn" v-if="isLogin">
-            <img src="@/assets/icons/leave.svg" alt="leave page icon"></a>
           </div>
         </div>
       </div>
@@ -80,6 +86,10 @@ export default {
 @import "@/styles/_variables.scss";
 @import "@/styles/media-mixins.scss";
 
+.mobile-btn {
+  display: none;
+}
+
 .header {
   &--wrapper {
     margin: 0 auto;
@@ -90,68 +100,50 @@ export default {
     margin-left: 10px;
   }
   & .header--logo {
-    width: 142px;
-    height: 40px;
-    margin: 5px 0;
-    background-image: url(@/assets/icons/logo_cult_black.svg);
-    background-repeat: no-repeat;
-    background-position: center;
     display: inline-block;
+    vertical-align: middle;
+    width: 103px;
+    height: 18px;
   }
   & .header--btns--item {
-    background-repeat: no-repeat;
-    background-position: center;
     font-weight: $navBtnsWeight;
     cursor: pointer;
+    margin: 0 10px;
+    img {
+      width: 22px;
+      height: 22px;
+    }
     &.search-btn {
-      margin-right: 20px;
       border: none;
       background-color: transparent;
-      padding: 6px 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      margin: 0 10px;
+      padding: 0;
       img {
-        display: inline-block;
-        height: 19.9px;
-      }
-      span {
-        margin-left: 8px;
-      }
-    }
-    &.favorite-btn {
-      margin: 6px 12px;
-      width: 24px;
-      height: 24px;
-      background-image: url(@/assets/icons/favorite.svg);
-    }
-    &.cart-btn {
-      margin: 6px 12px;
-      width: 24px;
-      height: 24px;
-      background-image: url(@/assets/icons/cart-black.svg);
-    }
-    &.login-btn {
-      padding: 6px 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      img {
-        display: inline-block;
-        height: 19.9px;
-      }
-      span {
-        margin-left: 8px;
+        width: 26px;
+        height: 26px;
       }
     }
 
-    &.leave-btn {
-      width: 24px;
-      height: 19.2px;
+    &.favorite-btn {
+      img {
+        height: 20px;
+      }
+    }
+
+    &.login-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        display: inline-block;
+      }
+      span {
+        margin-left: 11.5px;
+      }
     }
   }
   & .header--nav--list--item {
-    padding: 9.6px 0;
+    padding: 10px 0;
     margin: 16px;
   }
   & .header--nav--list--item.light {
@@ -168,6 +160,7 @@ export default {
     transition: all 0.3s ease-in-out;
     font-size: $navSize;
     font-weight: $navWeight;
+    line-height: 19px;
     &.light {
       opacity: 0.5;
     }
@@ -208,11 +201,70 @@ export default {
   }
 }
 
-.header-alternative{
+.header-alternative {
   height: 100px;
   border-bottom: 1px solid #ebebeb;
-  .container, .row{
+  .container,
+  .row {
     height: 100%;
+  }
+}
+
+.mobile-btn {
+  border: none;
+  background-color: transparent;
+  img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 900px) {
+  .header--wrapper {
+    margin: 0 15px;
+  }
+}
+
+@media (max-width: 850px) {
+  .login-btn span {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .header--nav--list--item {
+    display: none;
+  }
+
+  .header--wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .mobile-btn {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .header--wrapper {
+    margin: 0 5px;
+    position: relative;
+  }
+
+  .header--logo {
+    order: 2;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .search-btn {
+    position: absolute;
+    left: 40px;
+  }
+
+  .header {
+    height: 70px;
   }
 }
 </style>
