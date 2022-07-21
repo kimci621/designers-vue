@@ -2,15 +2,19 @@
   <div
     class="list-main-wrapper f"
     :class="{ bgactive: bgActive }"
-    v-if="this.hover && this.categories"
+    v-if="this.hover && this.categories && this.mobileActive"
   >
     <div class="list-wrapper">
       <ul class="add-new-page-window">
         <li
           class="add-new-page-window--item"
           v-if="position === 3 && [...this.categories].length === 0"
-          @mouseover="mouseOverEvent($event.target, 'Без категории 3-го уровня')"
-          @mouseleave="mouseLeaveEvent($event.target, 'Без категории 3-го уровня')"
+          @mouseover="
+            mouseOverEvent($event.target, 'Без категории 3-го уровня')
+          "
+          @mouseleave="
+            mouseLeaveEvent($event.target, 'Без категории 3-го уровня')
+          "
           @click="clickEvent($event.target, 0, 'Без категории 3-го уровня')"
         >
           Без подкатегории
@@ -23,7 +27,9 @@
           @mouseleave="mouseLeaveEvent($event.target, category.name)"
           @click="clickEvent($event.target, index, category.name)"
         >
-          {{ category.name }} <span class="add-new-page-window--item--icon"></span>
+          {{ category.name }}
+          <span class="add-new-page-window--item--icon"></span>
+          <span class="add-new-page-window--item--icon mobile"></span>
         </li>
       </ul>
     </div>
@@ -41,15 +47,14 @@
 <script>
 export default {
   name: "AddNewPageCategoryWindow",
-  props: {
-    //наименования категорий, приходит из AddNew.vue
-    categories: Array,
-    //скрытие/появление через состояния
-    hover: Boolean,
-    position: Number,
-    sendButton: Boolean,
-    DataforPost: Object,
-  },
+  props: [
+    "categories",
+    "hover",
+    "position",
+    "sendButton",
+    "DataforPost",
+    "mobileActive",
+  ],
   data() {
     return {
       isLogin: Boolean,
@@ -63,11 +68,14 @@ export default {
   methods: {
     removeActive: function (items, i) {
       items[i].classList.remove("active");
-      items[i].querySelector("span").classList.remove("active");
+      items[i]
+        .querySelectorAll("span")
+        .forEach((span) => span.classList.remove("active"));
       this.stopHover = true;
       this.changeBgClass(false);
       //удаляем  имя выбранной по клику категории в localState родителя
       this.$emit("deleteCategory", this.position);
+      this.$emit("mobileFirstFormWindowSwitch", this.position, "next");
     },
     removeActiveFromAll: function (parent) {
       //Удаляем классы у всех и добавляем нажатой категории
@@ -89,11 +97,14 @@ export default {
       parent.querySelectorAll("span").forEach((span) => {
         span.classList.remove("active");
       });
-      items[i].querySelector("span").classList.add("active");
+      items[i]
+        .querySelectorAll("span")
+        .forEach((span) => span.classList.add("active"));
       this.stopHover = false;
       //сохраняет имя выбранной по клику категории в localState родителя
       this.$emit("setCategory", this.position, items[i].textContent);
       this.changeBgClass(true);
+      this.$emit("mobileFirstFormWindowSwitch", this.position, "next");
     },
     classTrigger: function (items, index, parent) {
       let collection = items;
@@ -102,7 +113,9 @@ export default {
       //Ликвидация активной кнопки, удаление класса active
       if (collection[indexOfCollection].classList.contains("active") === true) {
         this.removeActive(collection, indexOfCollection);
-      } else if (collection[indexOfCollection].classList.contains("active") === false) {
+      } else if (
+        collection[indexOfCollection].classList.contains("active") === false
+      ) {
         this.addActive(collection, indexOfCollection, parentOfCollection);
       }
     },
@@ -118,8 +131,13 @@ export default {
             document.querySelectorAll(".list-main-wrapper")[this.position]
           );
           //стираем активную кнопку у последнего элемента если был нажат 1
-          if (this.position === 1 && document.querySelectorAll(".list-main-wrapper")[2]) {
-            this.removeActiveFromAll(document.querySelectorAll(".list-main-wrapper")[2]);
+          if (
+            this.position === 1 &&
+            document.querySelectorAll(".list-main-wrapper")[2]
+          ) {
+            this.removeActiveFromAll(
+              document.querySelectorAll(".list-main-wrapper")[2]
+            );
             this.$emit("postValue", false);
           }
         }
@@ -155,13 +173,17 @@ export default {
     },
     nextPage: function () {
       console.log(JSON.stringify(this.DataforPost));
-      this.$emit('secondPageActiveTrigger', false, true)
+      this.$emit("secondPageActiveTrigger", false, true);
+    },
+    //предыдущее окно
+    prevMobileWindow() {
+      this.$emit("mobileFirstFormWindowSwitch", this.position, "back");
     },
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/styles/_variables.scss";
 $bg-active: #f9f9f9;
 $border-color: #ebebeb;
@@ -179,8 +201,7 @@ $border-color: #ebebeb;
 .list-main-wrapper {
   // max-width: 380px;
   width: calc(100% / 3);
-  min-height: 390px;
-  max-height: 450px;
+  height: 450px;
   padding: 24px 0 24px 16px;
   overflow: hidden;
   border: 1px solid $border-color;
@@ -243,6 +264,7 @@ $border-color: #ebebeb;
     font-weight: 400;
   }
   &--item:hover {
+    //!!! нужна доработка чтобы не было эффекта на телефонах <850px
     background-color: #fff;
   }
   &--item--icon {
@@ -258,6 +280,14 @@ $border-color: #ebebeb;
     display: inline-block;
     visibility: visible;
   }
+  &--item--icon.mobile {
+    display: none;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #000;
+    border-radius: 50%;
+  }
   &--item.active {
     color: $pink;
     font-weight: 700;
@@ -270,11 +300,12 @@ $border-color: #ebebeb;
   // list wrapper scrollbar
   &::-webkit-scrollbar {
     width: 5px;
+       background: $pink;
   }
   &::-webkit-scrollbar-track {
     border-radius: 5px;
     width: 1px;
-    background: #000000;
+    background: $pink;
     margin-top: 10px;
     margin-bottom: 5px;
   }
@@ -288,13 +319,60 @@ $border-color: #ebebeb;
     /* - видимая часть трека */
     width: 1px;
     border-radius: 5px;
-    background: #000000;
+    background: $pink;
   }
 }
-
-@media (max-width: 700px) {
+// .back-btn {
+//   display: none;
+// }
+@media (max-width: 850px) {
   .list-main-wrapper {
     width: 100%;
+  }
+
+  .add-new-page-window--item {
+    padding: 0;
+    // border: 1px solid #EBEBEB;
+    border-radius: 0;
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 24px;
+    & + & {
+      border-bottom: 1px solid #ebebeb;
+    }
+    &:nth-child(1) {
+      border-bottom: 1px solid #ebebeb;
+      border-top: 1px solid #ebebeb;
+    }
+  }
+
+  .add-new-page-window {
+    &--item--icon {
+      display: none;
+      &::after {
+        display: none;
+      }
+    }
+    &--item--icon.mobile.active {
+      display: inline-block;
+      position: relative;
+      visibility: visible;
+      &::before {
+        content: url(@/assets/icons/clicked-ok-green.svg);
+        position: absolute;
+        right: -13px;
+        top: -15px;
+      }
+    }
+  }
+
+  .list-main-wrapper--btn {
+    // display: none;
+    position: fixed;
   }
 }
 </style>
