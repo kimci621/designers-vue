@@ -3,6 +3,12 @@
     <headerComponent :activeTopList="false" :isActive="true"></headerComponent>
     <main>
       <div class="container">
+        <pre>
+      {{ newItemData.main }}
+      {{ newItemData.second }}
+      {{ newItemData.third }}
+      </pre
+        >
         <div class="first-page--wrapper f column" v-if="firstPageActive">
           <a href="#" class="back-to-profile-btn">Вернуться в личный кабинет</a>
           <h2 class="first-page--title">Добавление товара</h2>
@@ -236,6 +242,19 @@ export default {
       this.firstFormWindowIndex > 1
         ? (this.firstFormWindowIndex = this.firstFormWindowIndex - 1)
         : null;
+    },
+  },
+  watch: {
+    mode(newMode, oldMode) {
+      if (newMode) {
+        this.deleteCategoryString(1);
+        this.deleteCategoryString(2);
+        this.deleteCategoryString(3);
+        //При переходе с мобильной версии в десктоп скрываем 2 и 3 категории
+        this.SecondCategories = undefined;
+        this.ThirdCategories = undefined;
+        document.querySelectorAll(".list-main-wrapper.f.bgactive").forEach(item=>item.classList.remove("bgactive"))
+      }
     },
   },
   computed: {
