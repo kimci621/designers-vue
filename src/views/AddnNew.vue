@@ -3,12 +3,12 @@
     <headerComponent :activeTopList="false" :isActive="true"></headerComponent>
     <main>
       <div class="container">
-        <pre>
+        <!-- <pre>
       {{ newItemData.main }}
       {{ newItemData.second }}
       {{ newItemData.third }}
       </pre
-        >
+        > -->
         <div class="first-page--wrapper f column" v-if="firstPageActive">
           <a href="#" class="back-to-profile-btn">Вернуться в личный кабинет</a>
           <h2 class="first-page--title">Добавление товара</h2>
@@ -56,7 +56,10 @@
             <!-- @postValue="saveThirdBlockValue" -->
           </div>
         </div>
-        <div class="second-page--wrapper f column" v-if="secondPageActive">
+        <div
+          class="second-page--wrapper f column"
+          v-if="secondPageActive"
+        >
           <a
             href="#"
             class="back-to-profile-btn second-form"
@@ -64,7 +67,7 @@
             >Вернуться к выбору категорий</a
           >
           <h2 class="second-page--title">Добавление товара</h2>
-          <addNewPageSecondPage></addNewPageSecondPage>
+          <addNewPageSecondPage :newItemData="newItemData"></addNewPageSecondPage>
         </div>
       </div>
     </main>
@@ -253,7 +256,9 @@ export default {
         //При переходе с мобильной версии в десктоп скрываем 2 и 3 категории
         this.SecondCategories = undefined;
         this.ThirdCategories = undefined;
-        document.querySelectorAll(".list-main-wrapper.f.bgactive").forEach(item=>item.classList.remove("bgactive"))
+        document
+          .querySelectorAll(".list-main-wrapper.f.bgactive")
+          .forEach((item) => item.classList.remove("bgactive"));
       }
     },
   },
@@ -391,6 +396,7 @@ $bold: 700;
     }
   }
 }
+
 
 @media (max-width: 700px) {
   .first-page--content {
